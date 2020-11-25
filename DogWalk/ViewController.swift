@@ -128,4 +128,19 @@ extension ViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
     "List of Walks"
   }
+  
+  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    true
+  }
+  
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    guard let walkToRemove = currentDog?.walks?[indexPath.row] as? Walk,
+          editingStyle == .delete else { return }
+    
+    coreDataStack.managedContext.delete(walkToRemove)
+    
+    coreDataStack.saveContext()
+    
+    tableView.deleteRows(at: [indexPath], with: .automatic)
+  }
 }
